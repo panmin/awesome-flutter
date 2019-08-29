@@ -1,7 +1,5 @@
 ## Flutter widget组件简介
 
-[TOC]
-
 ### 一、简介
 
 Flutter Widget采用现代**响应式**框架构建，核心思想是用`widget`组件来构建UI，当`widget`的状态发生变化时，`widget`也会对应重新构建UI，Flutrer会对比前后变化的不同，以确定底层渲染树从一个状态转换到下一个状态所需的最小更改。
@@ -318,6 +316,7 @@ class _WidgetLifePage2State extends State<WidgetLifePage2> {
    //WidgetLifePage2启动时
    page2 initState
    page2 didChangeDependencies
+   page2 build
    ```
 
 2. WidgetLifePage跳转WidgetLifePage2时分别调用了哪些生命周期？
@@ -325,6 +324,7 @@ class _WidgetLifePage2State extends State<WidgetLifePage2> {
    ```dart
    page2 initState
    page2 didChangeDependencies
+   page2 build
    page1 deactivate
    page1 build
    ```
@@ -333,6 +333,7 @@ class _WidgetLifePage2State extends State<WidgetLifePage2> {
 
    ```dart
    page1 deactivate
+   page1 build
    page2 deactivate
    page2 dispose
    ```
