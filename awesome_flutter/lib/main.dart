@@ -1,3 +1,5 @@
+import 'package:awesome_flutter/widget_life/widget_life.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -21,6 +23,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
+//      home: WidgetLifePage(),
     );
   }
 }
@@ -108,4 +111,54 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    print("debugFillProperties");
+    super.debugFillProperties(properties);
+  }
+
+  @override
+  void didChangeDependencies() {
+    print("didChangeDependencies");
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    print("dispose");
+    super.dispose();
+  }
+
+  @override
+  void deactivate() {
+    print("deactivate");
+    super.deactivate();
+  }
+
+//  @override
+//  void setState(VoidCallback fn) {
+//    print("setState");
+//    fn();
+//  }
+
+  @override
+  void reassemble() {
+    print("reassemble");
+    super.reassemble();
+  }
+
+  @override
+  void didUpdateWidget(MyHomePage oldWidget) {
+    print("didUpdateWidget");
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void initState() {
+    print("initState");
+    super.initState();
+  }
+
+
 }
