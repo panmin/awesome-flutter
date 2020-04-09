@@ -108,7 +108,7 @@
 
 ##### 3.2.1、场景一
 
-> depot_tools中报错，提示**ValueError: deplicate key in dictionary**，出现这种字样一半都是fork的官方源码库需要同步了
+> depot_tools中报错，提示**ValueError: deplicate key in dictionary**，出现这种字样一般都是fork的官方源码库需要同步了
 
 ![image-20200404111626164](./imgs/image-gclient-error1.png)
 
@@ -138,3 +138,6 @@
 3. 退出`v2ray`，然后再次打开
 4. 再在浏览器中试下是否能够打开此域名，这次应该是能够打开的，问题解决
 
+*参考资料：*
+
+官方文档：https://github.com/flutter/flutter/wiki/Setting-up-the-Engine-development-environment

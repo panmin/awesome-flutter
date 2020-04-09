@@ -39,9 +39,9 @@ if(appFile.exists()){
 shellArgs.add("--" + AOT_SHARED_LIBRARY_NAME + "=" + aotSharedLibraryPath);
 ```
 
-*如果不需要动态替换`flutter_assets`文件，其实上面就修改就足够动态替换`libapp.so`了。*还有一种不用修改engine源码的方法就是在继承`FlutterActivity`时重写`getFlutterShellArgs`方法，把`AOT_SHARED_LIBRARY_NAME`传递成自定义的路径，亲测有效，小伙伴们自行尝试，有问题可以在留言区交流。
+如果不需要动态替换`flutter_assets`文件，其实上面就修改就足够动态替换`libapp.so`了。还有一种不用修改engine源码的方法就是在继承`FlutterActivity`时重写`getFlutterShellArgs`方法，把`AOT_SHARED_LIBRARY_NAME`传递成自定义的路径，亲测有效，小伙伴们自行尝试，有问题可以在留言区交流。
 
-*附上`AOT_SHARED_LIBRARY_NAME`在C层使用的代码*
+附上`AOT_SHARED_LIBRARY_NAME`在C层使用的代码
 
 ```c++
 // 代码位置shell-->common-->switches.cc
@@ -97,7 +97,7 @@ static jlong AttachJNI(JNIEnv* env,
   Settings settings = FlutterMain::Get().GetSettings();
   if(dynamic_path.size() > 0) {
       settings.application_library_path.clear();
-    	// 再AndroidShellHolder初始化前设置新路径
+    	// 在AndroidShellHolder初始化前设置新路径
       settings.application_library_path.emplace_back(dynamic_path + "/libapp.so");
       settings.assets_path = dynamic_path + "/flutter_assets";
   }
@@ -165,10 +165,68 @@ public static String getDynamicPath(Context applicationContext){
 
 > 修改完engine的代码，这一小节我们就来看看如何将修改后的engine编译成`flutter.jar`和`libflutter.so`
 
-#### 2.1、
+#### 2.1、编译相关基础知识
 
+* **CPU架构**
 
+  编译结果包括`arm`、`arm64`、`x86`这几种架构，arm对应Android的`armeabi-v7a`，arm64对应Android的`arm64-v8a`，x86还是`x86`一般是模拟器上用的。
+
+* **是否优化**
+
+  未优化的engine包是可以添加打印出C层的代码的，engine的C++里用`FML_LOG(INFO)`打印log；优化后的包体积也更小。
+
+* **运行模式**
+
+  根据flutter的模式是分为`debug`、`profile`、`release`这三种模式的。
+
+#### 2.2、常用的编译参数
+
+* `--android-cpu`: CPU架构，对应`arm`、`arm64`、`x86`，如：`gn --android-cpu arm`
+* `--runtime-mode`: 运行模式，对应`debug`、`profile`、`release`，如：`gn --runtime-mode debug`
+* `--unoptiimized`: 是否优化，带上这个参数就说明是不优化的情况
+
+#### 2.3、编译开始
+
+```shell
+# 1、定位到`engine/src`目录
+cd engine/src
+# 2、编译Android对应平台已优化的release代码，这里大家根据自己的实际使用情况，合理的使用2.2中提到的编译参数
+./flutter/tools/gn --android --runtime-mode release --android-cpu arm
+# 通过2中的命令会在src目录下生成一个out/android_release的目录
+# 3、编译2中生成的代码成为flutter.jar和libflutter.so，这一步就最耗时的，有快有慢，看电脑性能了
+ninja -C out/android_release
+# 如果2中使用的CPU架构是arm64时，3中的这一步就要用android_release_arm64文件夹了
+# 4、编译Android打包时需要的代码
+./flutter/tools/gn --runtime-mode release --android-cpu arm
+# 5、同样编译一下
+ninja -C out/host_android
+# 如果4中使用的是arm64，这里就需要用host_android_arm64文件夹了
+```
+
+通过上的编译，我们可以看到`out/android_release`文件夹中已经生成了`flutter.jar`和里面已经包含了`libflutter.so`
 
 ### 三、使用本地engine
 
+> 这一小节只讲解纯flutter项目时如何使用；至于混合开发的项目中如何使用，因为牵扯到一些gradle脚本的修改，我会单独抽出一篇文章来讲。
+
+#### 3.1、使用本地engine打包apk
+
+```shell
+# 打包arm平台的apk
+flutter build apk --target-plarform android-arm --split-per-abi --local-engine-src engine/src --local-engine=android-release
+# 打包arm64平台的apk
+flutter build apk --target-plarform android-arm --split-per-abi --local-engine-src engine/src --local-engine=android-release_arm64
+```
+
+#### 3.2、修改代码后如何查看新的`libapp.so`和`flutter_assets`文件
+
+> 对于已经安装完使用本地engine打包的apk的手机来说，想动态更新新的代码，需要找到修改后代码打包生成的`libapp.so`和`flutter_assets`文件，这个文件怎么生成和找到的呢？
+
+1. 修改dart代码
+2. 使用3.1中的命令打包apk
+3. 在跟`lib`同级别的目录`build/app/intermediates/flutter/release`下找到对应CPU架构的**`app.so`**文件，将其改名成**`libapp.so`**，然后在app启动时复制到`PathUtils.getDataDirectory(applicationContext)`对应的目录下，也就是`user/0/package/app_flutter`目录下；把`build/app/intermediates/flutter/release`目录下的`flutter_assets`也复制到这个目录下。
+4. 待下次重启app时即可生效
+
 ### 四、总结
+
+本篇文章讲解了flutter engine代码实现动态化的代码修改，以及编译和使用本地的engine，下一篇我会详细讲解在混合开发时使用本地engine，以及如何修改`bulid aar`时的脚本，打包成**aar**供业务方使用，也是伸手党们的福利，欢迎大家关注和点赞。
