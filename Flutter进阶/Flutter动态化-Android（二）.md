@@ -353,6 +353,8 @@ flutter build aar --target-platform=android-arm --no-debug --no-profile --verbos
 flutter build aar --target-platform=android-arm64 --no-debug --no-profile --verbose
 ```
 
+打包结果为：
+
 ![image-20200414170232392](./imgs/image-flutter_aar.png)
 
 这个是打包后的结果，`flutter.jar`和`libflutter.so`已经打包进去了，这个**aar**产物直接交给Android原生工程使用的话就能直接使用了。
