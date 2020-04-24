@@ -84,4 +84,12 @@
 
    源码中有限制。要解决的话需要修改源码了
 
-   
+9. `Column`被撑开时，如何设置高度收紧？
+
+   ```dart
+   Column(mainAxisSize: MainAxisSize.min,)
+   ```
+
+10. `Stack`使用`fit: StackFit.expand`时，子组件`Container`设置高度无效，解决方案：
+
+    使用`Positioned`包裹`Container`，通过`left`、`right`、`top`、`bottom` 控制位置，这样`Container`才会自适应子组件的高度。
