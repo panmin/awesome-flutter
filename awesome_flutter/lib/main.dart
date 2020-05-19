@@ -1,3 +1,4 @@
+import 'package:awesome_flutter/animated_builder_test.dart';
 import 'package:awesome_flutter/staggered_test.dart';
 import 'package:awesome_flutter/widget_life/widget_life.dart';
 import 'package:flutter/foundation.dart';
@@ -41,7 +42,13 @@ class MainPage extends StatelessWidget {
             FlatButton(
                 onPressed: () => Navigator.push(context,
                     MaterialPageRoute(builder: (context) => StaggeredTest())),
-                child: Text("staggered grid view"))
+                child: Text("staggered grid view")),
+            RaisedButton(
+              child: Text("AnimatedBuilder"),
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AnimatedBuilderTest()))),
           ],
         ) //MyHomePage(title: 'Flutter Demo Home Page'),,
         );
