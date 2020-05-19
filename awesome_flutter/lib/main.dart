@@ -1,4 +1,5 @@
 import 'package:awesome_flutter/animated_builder_test.dart';
+import 'package:awesome_flutter/shader_mask_test.dart';
 import 'package:awesome_flutter/staggered_test.dart';
 import 'package:awesome_flutter/widget_life/widget_life.dart';
 import 'package:flutter/foundation.dart';
@@ -49,6 +50,12 @@ class MainPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => AnimatedBuilderTest()))),
+            RaisedButton(
+                child: Text("ShaderMask"),
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ShaderMaskTest()))),
           ],
         ) //MyHomePage(title: 'Flutter Demo Home Page'),,
         );
