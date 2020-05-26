@@ -56,6 +56,20 @@ class MainPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) => ShaderMaskTest()))),
+            RaisedButton(
+                child: Text("showSnackBar"),
+                onPressed: () {
+                  Scaffold.of(context).showSnackBar(SnackBar(content: Text("hello")));
+                }
+            ),
+            Builder(
+              builder:(context)=> RaisedButton(
+                  child: Text("showSnackBar"),
+                  onPressed: () {
+                    Scaffold.of(context).showSnackBar(SnackBar(content: Text("hello")));
+                  }
+              ),
+            ),
           ],
         ) //MyHomePage(title: 'Flutter Demo Home Page'),,
         );
